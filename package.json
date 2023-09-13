@@ -1,10 +1,13 @@
 {
   "name": "rpgmaker-mv-crypt",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
+  "description": "Node.JS library to (de)crypt RPGMaker MV files ",
   "scripts": {
     "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinceh121/rpgmaker-mv-decrypt.js.git"
   },
   "author": "vinceh121",
   "license": "MIT",
