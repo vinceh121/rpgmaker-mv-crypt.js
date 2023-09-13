@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Node.JS library to (de)crypt RPGMaker MV files ",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "test": "jest"
   },
   "repository": {
