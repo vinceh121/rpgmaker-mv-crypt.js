@@ -1,4 +1,4 @@
-  # rpgmaker-mv-decrypt.js
+  # rpgmaker-mv-crypt.js
 
   A simple Node.JS (and typescript) library to (de)crypt RPGMaker MV .rpgmvX files (.rpgmvp for images, etc).
 
