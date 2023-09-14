@@ -1,5 +1,5 @@
 import { describe } from "node:test";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { Decrypter } from "../src";
 
 describe("Test Decrypt", () => {
