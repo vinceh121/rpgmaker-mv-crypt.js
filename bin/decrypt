@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+
+const { statSync, readFileSync, writeFileSync, readdirSync } = require("node:fs");
+const { parse, format, join } = require("node:path");
+const { Decrypter } = require("../dist/index");
+
+let key;
+let recursive = false;
+let files = new Set();
+
+if (process.argv.length < 3) {
+	console.log("decrypt -k KEY [-r] FILES...");
+	process.exit(-1);
+}
+
+for (let i = 2; i < process.argv.length; i++) {
+	const arg = process.argv[i];
+
+	if (["-k", "--key"].includes(arg)) {
+		i++;
+		key = process.argv[i];
+	} else if (["-r", "--recursive"].includes(arg)) {
+		recursive = true;
+	} else {
+		files.add(process.argv[i]);
+	}
+}
+
+if (!key) {
+	console.error("Specify a key with -k");
+	process.exit(-1);
+}
+
+if (files.size === 0) {
+	console.error("No file specified");
+	process.exit(-1);
+}
+
+const decrypter = new Decrypter(key);
+
+const decrypt = (file) => {
+	const parts = parse(file);
+
+	if (parts.ext !== ".rpgmvp") {
+		return;
+	}
+
+	parts.ext = ".png";
+	parts.base = parts.base.replace(".rpgmvp", ".png");
+	const out = format(parts);
+
+	const buf = readFileSync(file);
+	const decryptBuf = decrypter.decrypt(buf);
+
+	writeFileSync(out, decryptBuf);
+};
+
+const recurse = (folder) => {
+	const list = readdirSync(folder);
+
+	for (const child of list) {
+		const childPath = join(folder, child);
+		const stat = statSync(childPath);
+
+		if (stat.isDirectory()) {
+			recurse(childPath);
+		} else {
+			decrypt(childPath);
+		}
+	}
+};
+
+for (const file of files) {
+	const stat = statSync(file);
+
+	if (stat.isDirectory()) {
+		if (recursive) {
+			recurse(file);
+		} else {
+			console.error("Folder specified but not running with -r");
+			process.exit(-2);
+		}
+	} else {
+		decrypt(file);
+	}
+}
